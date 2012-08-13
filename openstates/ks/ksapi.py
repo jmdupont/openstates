@@ -204,4 +204,14 @@ action_codes = {
     'dead_go_402': 'other', # died on general order
     'kill_reso_100': 'bill:failed',
     'kill_reso_200': 'bill:failed',
+
+# new stuff
+    'mot_susp_209': 'other', 
+    'mot_susp_208': 'other', 
+    'kill_reso_100': 'other',
+    'intro_iopbc_681': 'other', 
+    'intro_iopbc_251': 'other', 
+    'ccal_faccl_900': 'other', 
+    'misc_bs_100': 'other'
+
     }
