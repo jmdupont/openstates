@@ -10,8 +10,8 @@ import scrapelib
 from billy.scrape.bills import BillScraper, Bill
 from billy.scrape.votes import Vote
 from billy.scrape import NoDataForPeriod
-
-
+import logging
+_log = logging.getLogger('billy')
 import ksapi
 
 class KSBillScraper(BillScraper):
@@ -32,6 +32,17 @@ class KSBillScraper(BillScraper):
         for bill_data in bills:
 
             bill_id = bill_data['BILLNO']
+            
+
+            if not(self.get_filter_bill_id() is False):
+                if not bill_id == self.get_filter_bill_id():
+                    _log.debug ("Skipping bill_id %s != %s" % (bill_id,self.get_filter_bill_id()))
+                    continue
+                else:
+                    _log.debug ("Matched bill_id %s == %s" % (bill_id,self.get_filter_bill_id()))
+            else:
+                _log.debug ("no check bill_id %s and %s" % (bill_id,self.get_filter_bill_id()))
+                
 
             # filter other chambers
             if not bill_id.startswith(chamber_letter):
@@ -86,8 +97,10 @@ class KSBillScraper(BillScraper):
             try:
                 self.scrape_html(bill)
             except scrapelib.HTTPError as e:
-                self.warning('unable to fetch HTML for bill {0}'.format(
-                    bill['bill_id']))
+                self.debug(e)
+                self.debug(bill)
+                self.warning('unable to fetch HTML for bill {0}'.format( bill['bill_id']))
+                
             self.save_bill(bill)
 
     def scrape_html(self, bill):
@@ -98,7 +111,11 @@ class KSBillScraper(BillScraper):
             base_url = 'http://www.kslegislature.org/li/%s/year1/measures/' % slug
 
         url = base_url + bill['bill_id'].lower() + '/'
-        doc = lxml.html.fromstring(self.urlopen(url))
+        data = self.urlopen(url)
+        if len(data) < 1:
+            raise Exception("No data from bill id: %s on url %s" % (bill['bill_id'], url ))
+
+        doc = lxml.html.fromstring(data)
         doc.make_links_absolute(url)
 
         bill.add_source(url)
