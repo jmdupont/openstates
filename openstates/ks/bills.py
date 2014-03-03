@@ -113,7 +113,12 @@ class KSBillScraper(BillScraper):
             self.save_bill(bill)
 
     def scrape_html(self, bill):
-        slug = {'2013-2014': 'b2013_14'}[bill['session']]
+        _log.debug(bill)
+        _log.debug(bill['session'])
+        slug = {
+            '2012' : '2012',
+            '2013-2014': 'b2013_14'
+        }[bill['session']]
         # we have to go to the HTML for the versions & votes
         base_url = '%s/%s/measures/' % (LI, slug)
         if 'resolution' in bill['type']:
