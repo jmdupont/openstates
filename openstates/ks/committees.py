@@ -5,7 +5,7 @@ import json
 import scrapelib
 from billy.scrape.committees import Committee, CommitteeScraper
 import ksapi
-
+from openstates.ks.bills import KSBillScraper
 
 class KSCommitteeScraper(CommitteeScraper):
     jurisdiction = 'ks'

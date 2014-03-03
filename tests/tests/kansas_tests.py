@@ -19,7 +19,7 @@ def info(type, value, tb):
     sys.__excepthook__(type, value, tb)
 
 sys.excepthook = info
-
+from openstates.ks.bills import KSBillScraper
 
 format = ("TEST:%(pathname)s %(asctime)s %(name)s %(levelname)s %(funcName)s %(lineno)d %(message)s")
 logging.basicConfig(level=logging.DEBUG, format=format, datefmt="%H:%M:%S")
