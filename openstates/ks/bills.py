@@ -25,11 +25,16 @@ class KSBillScraper(BillScraper):
         if os.system('which abiword') != 0:
             raise ScrapeError('abiword is required for KS scraping')
 
-        chamber_name = 'Senate' if chamber == 'upper' else 'House'
-        chamber_letter = chamber_name[0]
+
+
         # perhaps we should save this data so we can make one request for both?
         bill_request = self.urlopen(ksapi.url + 'bill_status/')
-        bill_request_json = json.loads(bill_request)
+        return self._scrape_data(chamber, session, bill_request)
+
+    def _scrape_data(self, chamber, session, jsons):
+        chamber_name = 'Senate' if chamber == 'upper' else 'House'
+        chamber_letter = chamber_name[0]
+        bill_request_json = json.loads(jsons)
         bills = bill_request_json['content']
         for bill_data in bills:
             bill_id = bill_data['BILLNO']
@@ -111,6 +116,7 @@ class KSBillScraper(BillScraper):
                 self.warning('unable to fetch HTML for bill {0}'.format(
                     bill['bill_id']))
             self.save_bill(bill)
+
 
     def scrape_html(self, bill):
         _log.debug(bill)

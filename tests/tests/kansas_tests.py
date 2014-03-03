@@ -86,6 +86,15 @@ class TestKansas(unittest.TestCase):
         chamber="house"
         time      ="2012"
         c = openstates.ks.committees.KSBillScraper(metadata,output_dir="/tmp")
+        f = open ('tests/tests/kansas_bill_status.json')
+        d = f.read()
+        c._scrape_data(chamber, time, d)
+
+    def test_committees2(self):
+        metadata = self.test_metadata()
+        chamber="house"
+        time      ="2012"
+        c = openstates.ks.committees.KSBillScraper(metadata,output_dir="/tmp")
         c.scrape(chamber, time)
 
     def test_legislators(self):        
